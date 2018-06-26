@@ -1,5 +1,6 @@
 require_relative 'extension_error'
 
+# TODO: implement base parser class for common interface
 module Parsers
   class DictionaryParser
     def initialize(file)
@@ -11,13 +12,11 @@ module Parsers
     end
 
     def parse
-      # TODO: add other validations
       validate_input_file_extension
-      first_line = remove_control_char(@file.first)
-      first_line.to_i.zero? ? process_string(first_line) : rec_word_count(first_line.to_i)
-      while (line = @file.gets)
-        process_string(line)
-      end
+      content = @file.to_a
+      cleanup_content(content)
+      word_count_try(content)
+      fetch_words(content)
       @dictionary
     end
 
@@ -28,22 +27,32 @@ module Parsers
       raise ExtensionError, extension unless extension == '.dic'
     end
 
-    def remove_control_char(line)
-      line.delete!("\n")
+    def cleanup_content(content)
+      content.map! do |line|
+        remove_control_chars(line)
+      end
     end
 
-    def rec_word_count(number = nil)
-      @dictionary[:approx_word_count] = number
+    def remove_control_chars(line)
+      line.gsub(/[\n\t]/, '')
     end
 
-    def process_string(string)
-      remove_control_char(string)
-      word, affixes = string.scan(%r{[*\w\s]*[^\/]})
-      word.include?('*') ? add_to_forbidden(word) : add_to_words(word, affixes)
+    def word_count_try(content)
+      @dictionary[:approx_word_count] = Integer(content.first)
+      content.delete_at 0
+    rescue ArgumentError
+      nil
+    end
+
+    def fetch_words(content)
+      content.each do |line|
+        word, affixes = line.scan(%r{[*\w\s]*[^\/]})
+        word.include?('*') ? add_to_forbidden(word) : add_to_words(word, affixes)
+      end
     end
 
     def add_to_forbidden(word)
-      @dictionary[:forbidden_words] << word
+      @dictionary[:forbidden_words] << word.delete('*')
     end
 
     def add_to_words(word, affixes)
