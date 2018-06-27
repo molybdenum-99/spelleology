@@ -6,8 +6,7 @@ module Parsers
     def initialize(file)
       @file = file
       @affixes = {}
-      @affixes[:prefixes] = []
-      @affixes[:suffixes] = []
+      @affixes[:affixes] = []
     end
 
     def parse
@@ -15,7 +14,8 @@ module Parsers
       validate_input_file_extension
       content = @file.to_a
       cleanup_content(content)
-      @affixes[:prefixes], @affixes[:suffixes] = prepare_result(content)
+      affixes = fetch_affixes(content)
+      @affixes[:affixes] = objectize_affixes_from_array(affixes)
       @affixes
     end
 
@@ -36,14 +36,8 @@ module Parsers
       line.gsub(/[\n\t]/, '')
     end
 
-    def prepare_result(content)
-      prefixes = fetch_affixes_by_type(content, :pfx)
-      suffixes = fetch_affixes_by_type(content, :sfx)
-      [objectize_affixes_from_array(prefixes), objectize_affixes_from_array(suffixes)]
-    end
-
-    def fetch_affixes_by_type(content, affix_type)
-      affix = affix_type.to_s.upcase
+    def fetch_affixes(content)
+      affix = 'PFX|SFX'
       affixes = content.select do |line|
         line.match(affix)
       end

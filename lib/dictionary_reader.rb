@@ -20,7 +20,7 @@ class DictionaryReader
 
     def parse_aff(aff_file_path)
       aff_file = File.new(aff_file_path)
-      Parsers::AffixParser.parse(aff_file)
+      Parsers::AffixParser.new(aff_file).parse
     end
 
     def create_dictionary_object(result)

@@ -1,6 +1,8 @@
 class Dictionary
-  def initailize(dic_file, aff_file)
-    @dic = dic_file
-    @aff = aff_file
+  def initialize(approx_word_count:, words:, forbidden_words:, affixes:)
+    @approx_word_count = approx_word_count
+    @words = words
+    @forbidden_words = forbidden_words
+    @affixes = affixes
   end
 end
