@@ -3,6 +3,10 @@ require_relative 'extension_error'
 # TODO: implement base parser class for common interface
 module Parsers
   class DictionaryParser
+    include Dry::Monads::Result::Mixin
+    include Dry::Monads::Do.for(:call)
+
+    # TODO: refactor on do-notations
     def initialize(file)
       @file = file
       @dictionary = {}

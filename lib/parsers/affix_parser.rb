@@ -3,12 +3,16 @@ require_relative 'extension_error'
 # TODO: implement base parser class for common interface
 module Parsers
   class AffixParser
+    include Dry::Monads::Result::Mixin
+    include Dry::Monads::Do.for(:call)
+
     def initialize(file)
       @file = file
       @affixes = {}
       @affixes[:affixes] = []
     end
 
+    # TODO: refactor on do-notations
     def parse
       # TODO: add other validations
       validate_input_file_extension
