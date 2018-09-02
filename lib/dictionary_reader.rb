@@ -1,33 +1,30 @@
 require_relative 'dictionary'
+require_relative 'parsers/dictionary_reader_args_parser'
 require_relative 'parsers/dictionary_parser'
-require_relative 'parsers/affix_parser'
+require_relative 'builders/dictionary_builder'
 
 class DictionaryReader
   class << self
-    def read(dic_file_path, aff_file_path)
-      dic = parse_dic(dic_file_path)
-      aff = parse_aff(aff_file_path)
-      result = dic.merge aff
-      create_dictionary_object(result)
+    def read(*args)
+      dic_files = parse_arguments(args)
+      dic_files_data = get_data_from_dic_files(dic_files)
+      create_dictionary(dic_files_data)
     end
 
     private
 
-    def parse_dic(dic_file_path)
-      dic_file = File.new(dic_file_path)
-      Parsers::DictionaryParser.new(dic_file).parse
+    def parse_arguments(args)
+      Parsers::DictionaryReaderArgsParser.parse(*args)
     end
 
-    def parse_aff(aff_file_path)
-      aff_file = File.new(aff_file_path)
-      Parsers::AffixParser.new(aff_file).parse
+    def get_data_from_dic_files(dic_files)
+      dic_files.each_with_object({}) do |file, acc|
+        acc << Parsers::DictionaryParser.parse(file)
+      end
     end
 
-    def create_dictionary_object(result)
-      Dictionary.new(approx_word_count: result[:approx_word_count],
-                     words: result[:words],
-                     forbidden_words: result[:forbidden_words],
-                     affixes: result[:affixes])
+    def create_dictionary(data)
+      Builders::DictionaryBuilder.build(data)
     end
   end
 end
