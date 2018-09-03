@@ -27,6 +27,11 @@ module Parsers
     end
 
     class FileReader
+      require 'dry/monads/result'
+      require 'dry/monads/do'
+      require 'dry-validation'
+
+      include Dry::Monads::Result::Mixin
       include Dry::Monads::Do.for(:call)
 
       Schema = Dry::Validation.Schema do

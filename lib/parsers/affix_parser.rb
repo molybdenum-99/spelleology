@@ -3,8 +3,8 @@ require_relative 'extension_error'
 # TODO: implement base parser class for common interface
 module Parsers
   class AffixParser
-    include Dry::Monads::Result::Mixin
-    include Dry::Monads::Do.for(:call)
+    # include Dry::Monads::Result::Mixin
+    # include Dry::Monads::Do.for(:call)
 
     def initialize(file)
       @file = file
