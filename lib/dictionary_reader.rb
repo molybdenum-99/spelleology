@@ -6,15 +6,15 @@ require_relative 'builders/dictionary_builder'
 class DictionaryReader
   class << self
     def read(*args)
-      dic_files = parse_arguments(args)
+      dic_files = read_files_from_arguments(args)
       dic_files_data = get_data_from_dic_files(dic_files)
       create_dictionary(dic_files_data)
     end
 
     private
 
-    def parse_arguments(args)
-      Parsers::DictionaryReaderArgsParser.parse(*args)
+    def read_files_from_arguments(args)
+      Readers::FilesFromArgsReader.parse(*args)
     end
 
     def get_data_from_dic_files(dic_files)
