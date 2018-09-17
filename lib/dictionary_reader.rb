@@ -1,5 +1,5 @@
 require_relative 'dictionary'
-require_relative 'parsers/dictionary_reader_args_parser'
+require_relative 'readers/files_from_agrs_reader'
 require_relative 'parsers/dictionary_parser'
 require_relative 'builders/dictionary_builder'
 

@@ -33,7 +33,7 @@ module Readers
     def validate_file_non_zero_size(file_path)
       validation = File.zero?(file_path)
 
-      validation ? Success(file_path) : Failure("file on path #{file_path} has zero size")
+      validation ? Failure("file on path #{file_path} has zero size") : Success(file_path)
     end
 
     def validate_file_readable(file_path)
