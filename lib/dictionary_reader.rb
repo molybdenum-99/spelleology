@@ -14,7 +14,9 @@ class DictionaryReader
     private
 
     def read_files_from_arguments(args)
-      Readers::FilesFromArgsReader.parse(*args)
+      args.map do |arg|
+        File.read(arg)
+      end
     end
 
     def get_data_from_dic_files(dic_files)
