@@ -1,4 +1,4 @@
-require_relative 'extension_error'
+# require_relative 'extension_error'
 
 # TODO: implement base parser class for common interface
 module Parsers

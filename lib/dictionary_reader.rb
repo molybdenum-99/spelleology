@@ -21,7 +21,7 @@ class DictionaryReader
 
     def get_data_from_dic_files(dic_files)
       dic_files.each_with_object({}) do |file, acc|
-        acc << Factories::DictionaryParserFactory.new(file).parse
+        acc << Parsers::DictionaryParser.parse_file(file)
       end
     end
 
