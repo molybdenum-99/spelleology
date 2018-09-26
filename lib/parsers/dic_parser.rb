@@ -1,5 +1,7 @@
 module Parsers
   class DicParser
+    WORD_AFF_REGEX = %r{[*\w\s]*[^\/]}
+
     def initialize(file)
       @file = file
     end
@@ -16,16 +18,15 @@ module Parsers
 
     def word_count_try(content)
       Integer(content.first)
-      content.delete_at 0
     rescue ArgumentError
       nil
     end
 
     def fetch_words(content)
-      content.each_with_object({}) do |line, res|
+      content[1..-1].each_with_object({}) do |line, res|
         res[:words] ||= []
         res[:forbidden_words] ||= []
-        word, affixes = line.scan(%r{[*\w\s]*[^\/]})
+        word, affixes = line.scan(WORD_AFF_REGEX)
         if word.include?('*')
           res[:forbidden_words] << word.delete('*')
         else
