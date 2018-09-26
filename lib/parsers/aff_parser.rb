@@ -1,72 +1,38 @@
-# require_relative 'extension_error'
-
-# TODO: implement base parser class for common interface
 module Parsers
-  class AffixParser
-    # include Dry::Monads::Result::Mixin
-    # include Dry::Monads::Do.for(:call)
+  class AffParser
+    AFFIX_REGEX = /^(PFX|SFX)(\s|\w|.)*/
+    AFFIX_GROUP_REGEX = /^(PFX|SFX)\s\w/
 
     def initialize(file)
       @file = file
-      @affixes = {}
-      @affixes[:affixes] = []
     end
 
-    # TODO: refactor on do-notations
     def parse
-      # TODO: add other validations
-      validate_input_file_extension
-      content = @file.to_a
-      cleanup_content(content)
-      affixes = fetch_affixes(content)
-      @affixes[:affixes] = objectize_affixes_from_array(affixes)
-      @affixes
+      {}.tap do |res|
+        res[:affixes] = @file.to_a
+                             .map { |ln| ln.tr("\n\t", '') }
+                             .grep(AFFIX_REGEX)
+                             .group_by { |el| el[AFFIX_GROUP_REGEX] }.values
+                             .map(&method(:parse_affix_line))
+      end
     end
 
     private
 
-    def validate_input_file_extension
-      extension = File.extname(@file.to_path)
-      raise ExtensionError, extension unless extension == '.aff'
-    end
-
-    def cleanup_content(content)
-      content.map! do |line|
-        remove_control_chars(line)
+    def parse_affix_line(aff_group)
+      header = aff_group.first
+      name, flag, cross_product, line_count = header.split(/[\s*]/)
+      rules = aff_group[1..-1].each_with_object([]) do |el, arr|
+        _, _, stripping_rule, affixes, condition = el.split(/[\s*]/)
+        arr << { stripping_rule: stripping_rule, affixes: affixes, condition: condition }
       end
-    end
-
-    def remove_control_chars(line)
-      line.gsub(/[\n\t]/, '')
-    end
-
-    def fetch_affixes(content)
-      affix = 'PFX|SFX'
-      affixes = content.select do |line|
-        line.match(affix)
-      end
-      affixes.group_by do |line|
-        line[/^#{affix}\s\w/]
-      end.values
-    end
-
-    def objectize_affixes_from_array(affixes)
-      affixes.map do |affix|
-        header = affix.delete_at 0
-        name, flag, cross_product, line_count = header.split(/[\s*]/)
-        rules = []
-        affix.each do |el|
-          _, _, stripping_rule, affixes, condition = el.split(/[\s*]/)
-          rules << { stripping_rule: stripping_rule, affixes: affixes, condition: condition }
-        end
-        {
-          name: name,
-          flag: flag,
-          cross_product: cross_product,
-          line_count: line_count,
-          rules: rules
-        }
-      end
+      {
+        name: name,
+        flag: flag,
+        cross_product: cross_product,
+        line_count: line_count,
+        rules: rules
+      }
     end
   end
 end
