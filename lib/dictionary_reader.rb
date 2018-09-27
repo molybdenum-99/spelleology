@@ -1,7 +1,5 @@
-require_relative 'dictionary'
-require_relative 'readers/files_from_agrs_reader'
 require_relative 'parsers/dictionary_parser'
-require_relative 'builders/dictionary_builder'
+require_relative 'dictionary'
 
 class DictionaryReader
   class << self
@@ -15,18 +13,18 @@ class DictionaryReader
 
     def read_files_from_arguments(args)
       args.map do |arg|
-        File.read(arg)
+        File.new(arg)
       end
     end
 
     def get_data_from_dic_files(dic_files)
-      dic_files.each_with_object({}) do |file, acc|
-        acc << Parsers::DictionaryParser.parse_file(file)
+      dic_files.inject({}) do |acc, file|
+        acc.merge(Parsers::DictionaryParser.parse_file(file))
       end
     end
 
     def create_dictionary(data)
-      Builders::DictionaryBuilder.build(data)
+      Dictionary.new(data)
     end
   end
 end
