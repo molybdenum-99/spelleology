@@ -10,13 +10,13 @@ module Parsers
     end
 
     def parse
-      {}.tap do |res|
-        res[:affixes] = @file.to_a
-                             .map { |ln| ln.tr("\n\t", '') }
-                             .grep(AFFIX_REGEX)
-                             .group_by { |el| el[AFFIX_GROUP_REGEX] }.values
-                             .map(&method(:parse_affix_line))
-      end
+      {
+        affixes: @file.to_a
+                      .map { |ln| ln.tr("\n\t", '') }
+                      .grep(AFFIX_REGEX)
+                      .group_by { |el| el[AFFIX_GROUP_REGEX] }.values
+                      .map(&method(:parse_affix_line))
+      }
     end
 
     private
