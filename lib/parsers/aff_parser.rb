@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Parsers
   class AffParser
     AFFIX_REGEX = /^(PFX|SFX)(\s|\w|.)*/
@@ -20,12 +22,9 @@ module Parsers
     private
 
     def parse_affix_line(aff_group)
-      header = aff_group.first
+      header, *rule_lines = aff_group
       name, flag, cross_product, line_count = header.split(/[\s*]/)
-      rules = aff_group[1..-1].each_with_object([]) do |el, arr|
-        _, _, stripping_rule, affixes, condition = el.split(/[\s*]/)
-        arr << { stripping_rule: stripping_rule, affixes: affixes, condition: condition }
-      end
+      rules = fetch_rules(rule_lines)
       {
         name: name,
         flag: flag,
@@ -33,6 +32,13 @@ module Parsers
         line_count: line_count,
         rules: rules
       }
+    end
+
+    def fetch_rules(lines)
+      lines.map do |el|
+        _, _, stripping_rule, affixes, condition = el.split(/[\s*]/)
+        { stripping_rule: stripping_rule, affixes: affixes, condition: condition }
+      end
     end
   end
 end

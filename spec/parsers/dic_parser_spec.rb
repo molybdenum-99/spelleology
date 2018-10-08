@@ -15,4 +15,12 @@ RSpec.describe Parsers::DicParser do
   it 'returns reference result' do
     expect(subject).to eq reference_dic_result
   end
+
+  context 'personal dictionary' do
+    let(:file) { File.new('./spec/dictionaries/test_personal.dic') }
+
+    it 'returns reference result' do
+      expect(subject).to eq reference_personal_dic_result
+    end
+  end
 end

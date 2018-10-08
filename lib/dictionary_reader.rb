@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'parsers/dictionary_parser'
 require_relative 'dictionary'
 
@@ -12,9 +14,7 @@ class DictionaryReader
     private
 
     def read_files_from_arguments(args)
-      args.map do |arg|
-        File.new(arg)
-      end
+      args.map(&File.method(:new))
     end
 
     def get_data_from_dic_files(dic_files)

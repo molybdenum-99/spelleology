@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Parsers
   class DicParser
-    WORD_AFF_REGEX = %r{[*\w\s]*[^\/]}
+    WORD_AFF_REGEX = %r{^(\*?)([^\/]+)(?:\/(.+))?$}
 
     def initialize(file)
       @file = file
@@ -23,16 +25,13 @@ module Parsers
     end
 
     def fetch_words(content)
-      content[1..-1].each_with_object({}) do |line, res|
-        res[:words] ||= []
-        res[:forbidden_words] ||= []
-        word, affixes = line.scan(WORD_AFF_REGEX)
-        if word.include?('*')
-          res[:forbidden_words] << word.delete('*')
-        else
-          res[:words] << { word: word, affixes: affixes }
-        end
-      end
+      content.yield_self { |cnt| cnt - [word_count_try(cnt).to_s] }
+             .map { |ln| ln.match(WORD_AFF_REGEX).values_at(1, 2, 3) }
+             .map { |star, word, affixes| star == '*' ? word : { word: word, affixes: affixes } }
+             .partition { |word| word.is_a?(String) }
+             .yield_self do |forbidden, regular|
+               { words: regular, forbidden_words: forbidden }
+             end
     end
   end
 end

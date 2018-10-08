@@ -61,5 +61,23 @@ RSpec.shared_context 'reference_results' do
     }
   end
 
+  let(:reference_personal_dic_result) do
+    {
+      approx_word_count: nil,
+      words:
+      [
+        {
+          word: 'foo',
+          affixes: nil
+        },
+        {
+          word: 'Foo',
+          affixes: 'Simpson'
+        }
+      ],
+      forbidden_words: ['bar']
+    }
+  end
+
   let(:reference_reader_result) { reference_aff_result.merge(reference_dic_result) }
 end

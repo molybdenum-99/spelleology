@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'dic_parser'
 require_relative 'aff_parser'
 
