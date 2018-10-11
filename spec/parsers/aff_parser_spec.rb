@@ -1,12 +1,17 @@
+# frozen_string_literal: true
+
 require_relative '../../lib/parsers/aff_parser'
 require_relative '../reference_parsers_results'
+require_relative '../parsers_shared_examples'
 
 RSpec.describe Parsers::AffParser do
   include_context 'reference_results'
 
-  let(:file) { File.new('./spec/dictionaries/test_affix.aff') }
+  subject { described_class.parse(file_path) }
 
-  subject { described_class.new(file).parse }
+  it_behaves_like 'dictionary parser'
+
+  let(:file_path) { './spec/dictionaries/test_affix.aff' }
 
   it 'returns hash' do
     expect(subject).to be_a_kind_of(Hash)

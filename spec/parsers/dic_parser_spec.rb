@@ -4,9 +4,11 @@ require_relative '../reference_parsers_results'
 RSpec.describe Parsers::DicParser do
   include_context 'reference_results'
 
-  let(:file) { File.new('./spec/dictionaries/test_dict.dic') }
+  subject { described_class.parse(file_path) }
 
-  subject { described_class.new(file).parse }
+  it_behaves_like 'dictionary parser'
+
+  let(:file_path) { './spec/dictionaries/test_dict.dic' }
 
   it 'returns hash' do
     expect(subject).to be_a_kind_of(Hash)
@@ -17,7 +19,7 @@ RSpec.describe Parsers::DicParser do
   end
 
   context 'personal dictionary' do
-    let(:file) { File.new('./spec/dictionaries/test_personal.dic') }
+    let(:file_path) { './spec/dictionaries/test_personal.dic' }
 
     it 'returns reference result' do
       expect(subject).to eq reference_personal_dic_result

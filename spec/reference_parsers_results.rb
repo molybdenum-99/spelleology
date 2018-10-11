@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_context 'reference_results' do
   let(:reference_aff_result) do
     {
@@ -78,6 +80,4 @@ RSpec.shared_context 'reference_results' do
       forbidden_words: ['bar']
     }
   end
-
-  let(:reference_reader_result) { reference_aff_result.merge(reference_dic_result) }
 end
