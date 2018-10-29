@@ -1,0 +1,9 @@
+#Ignore editor backup and temporary files
+*~
+#*
+
+#Ignore org files
+*.org
+
+#Ignore gemset file
+.ruby-gemset
