@@ -1,1 +1,0 @@
-Hunspell port to Ruby -- work in (very early) progress!
